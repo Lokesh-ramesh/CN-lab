@@ -1,33 +1,35 @@
-#include <iostream>
-
+#include <bits/stdc++.h>
 using namespace std;
-
 int main()
 {
-    int size=50,current=0,input,out=10;
-    char a='y';
-    do{
-        if(current<=size){
-        if(current<=size && a=='y'){
-            cout<<"Enter a packet input: ";
-            cin>>input;
-            current+=input;
-        }
-        if(current>=10){
-        current=current-10;
-        cout<<"Packets sent is 10\n";
-        }
-        else{
-            cout<<"Packets sent is "<<current<<endl;
-            current=0;
-        }
-        cout<<"Remaining packets in bucket: "<<current<<endl;
-        cout<< "Do you want to input packet: ";
-        cin>>a;
-        }
-        //else cout<<"Bucket is full\n";
-    }while(current>0 || a=='y');
-    cout<<"---------------------------------\nProgram ended\n---------------------------------";
+    int no_of_queries, storage = 0, output_pkt_size;
+    int input_pkt_size, bucket_size, size_left;
+    cout << "Enter no of queries:";
+    cin >> no_of_queries;
+    cout << "Enter the bucket size:";
+    cin >> bucket_size;
+    cout << "Enter output packet  size:";
+    cin >> output_pkt_size;
 
+    for (int i = 0; i < no_of_queries; i++)
+    {
+        cout << "Enter input packet size:";
+        cin >> input_pkt_size;
+        size_left = bucket_size - storage;
+        if (input_pkt_size <= size_left)
+        {
+
+            storage += input_pkt_size;
+        }
+        else
+        {
+            cout << "Packet loss = " << input_pkt_size << endl;
+        }
+        cout << "Buffer size=" << storage << " out of bucket size=" << bucket_size << endl;
+        storage -= output_pkt_size;
+        if (storage < 0)
+            storage = 0;
+        cout << "after output new buffer size=" << storage << endl;
+    }
     return 0;
 }
