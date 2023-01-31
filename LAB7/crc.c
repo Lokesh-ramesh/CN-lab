@@ -1,95 +1,57 @@
 #include<stdio.h>
-#include<stdlib.h>
-#include <stdio.h>
- #include <conio.h>
- #include <string.h>
- // C Program to concatenate two
-// strings without using strcat
-#include <stdio.h>
-
-
- 
- void main() {
-int i,j,keylen,msglen;
-char input[100], key[30],temp[30],quot[100],rem[30],key1[30];
-
-
-printf("Enter Data: ");
-gets(input);
-printf("Enter G(x): ");
-gets(key);
-keylen=strlen(key);
-msglen=strlen(input);
-strcpy(key1,key);
-for (i=0;i<keylen-1;i++) {
-input[msglen+i]='0';
+#include<string.h>
+#define N strlen(gen_poly)
+char data[28];
+char check_value[28];
+char gen_poly[10];
+int data_length,i,j;
+void XOR(){
+    for(j = 1;j < N; j++)
+    check_value[j] = (( check_value[j] == gen_poly[j])?'0':'1');
+    
 }
-for (i=0;i<keylen;i++)
-temp[i]=input[i];
-for (i=0;i<msglen;i++) {
-quot[i]=temp[0];
-if(quot[i]=='0')
-for (j=0;j<keylen;j++)
-key[j]='0'; 
-else
-for (j=0;j<keylen;j++)
-key[j]=key1[j];
-for (j=keylen-1;j>0;j--) {
-if(temp[j]==key[j])
-rem[j-1]='0'; else
-rem[j-1]='1';
+
+void crc(){
+    for(i=0;i<N;i++)
+        check_value[i]=data[i];
+    do{
+        if(check_value[0]=='1')
+            XOR();
+        for(j=0;j<N-1;j++)
+            check_value[j]=check_value[j+1];
+        check_value[j]=data[i++];
+    }while(i<=data_length+N-1);
 }
-rem[keylen-1]=input[i+keylen];
-strcpy(temp,rem);
+
+void receiver(){
+    printf("\nEnter the received data: ");
+    scanf("%s", data);
+    printf("Data received: %s", data);
+    crc();
+    for(i=0;(i<N-1) && (check_value[i]!='1');i++);
+        if(i<N-1)
+            printf("\nError detected\n\n");
+        else
+            printf("\nNo error detected\n\n");
 }
-strcpy(rem,temp);
-printf("\nQuotient is ");
-for (i=0;i<msglen;i++)
-printf("%c",quot[i]);
-printf("\nRemainder is ");
-for (i=0;i<keylen-1;i++)
-printf("%c",rem[i]);
-printf("\nModified data is: ");
-for (i=0;i<msglen;i++)
-printf("%c",input[i]);
-for (i=0;i<keylen-1;i++)
-printf("%c",rem[i]);
-
-for(i=0;i<(keylen);i++)
-input[msglen+i]=rem[i];
-
-keylen=strlen(key);
-msglen=strlen(input);
-strcpy(key1,key);
-for (i=0;i<keylen-1;i++) {
-input[msglen+i]='0';
-}
-for (i=0;i<keylen;i++)
-temp[i]=input[i];
-for (i=0;i<msglen;i++) {
-quot[i]=temp[0];
-if(quot[i]=='0')
-for (j=0;j<keylen;j++)
-key[j]='0'; 
-else
-for (j=0;j<keylen;j++)
-key[j]=key1[j];
-for (j=keylen-1;j>0;j--) {
-if(temp[j]==key[j])
-rem[j-1]='0'; else
-rem[j-1]='1';
-}
-rem[keylen-1]=input[i+keylen];
-strcpy(temp,rem);
-}
-strcpy(rem,temp);
-
-printf("%c",quot[i]);
-printf("\nRemainder is at reciever side ");
-for (i=0;i<keylen-1;i++)
-printf("%c",rem[i]);
 
 
 
-getch();
+int main()
+{
+    printf("\nEnter data to be transmitted: ");
+    scanf("%s",data);
+    printf("\nEnter the Generating polynomial: ");
+    scanf("%s",gen_poly);
+    data_length=strlen(data);
+    for(i=data_length;i<data_length+N-1;i++)
+        data[i]='0';
+    printf("\nData padded with n-1 zeros : %s",data);
+    crc();
+    printf("\nCRC or Check value is : %s",check_value);
+    for(i=data_length;i<data_length+N-1;i++)
+        data[i]=check_value[i-data_length];
+    printf("\nFinal data to be sent : %s",data);
+    receiver();
+        return 0;
 }
