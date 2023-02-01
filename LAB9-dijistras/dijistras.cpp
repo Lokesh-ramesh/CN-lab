@@ -1,76 +1,73 @@
-#include<bits/stdc++.h>
-#include <limits.h>
 #include <stdio.h>
- using namespace std;
-
-#define V 4
-
-
-int minDistance(int dist[], bool sptSet[])
+void dijkstras();
+// int parent[10];
+// int count;
+int c[10][10], n, src;
+void main()
 {
-
-    int min = INT_MAX, min_index;
-
-    for (int v = 0; v < V; v++)
-        if (sptSet[v] == false && dist[v] <= min)
-            min = dist[v], min_index = v;
-
-    return min_index;
-}
-
-
-void printSolution(int dist[])
-{
-    printf("Vertex \t\t Distance from Source\n");
-    for (int i = 0; i < V; i++)
-        printf("%d \t\t %d\n", i, dist[i]);
-}
-
-
-void dijkstra(int graph[V][V], int src)
-{
-    int dist[V];
-    bool sptSet[V];
-    for (int i = 0; i < V; i++)
-        dist[i] = INT_MAX, sptSet[i] = false;
-
-
-    dist[src] = 0;
-
-
-    for (int count = 0; count < V - 1; count++) {
-
-        int u = minDistance(dist, sptSet);
-
-
-        sptSet[u] = true;
-
-
-        for (int v = 0; v < V; v++)
-
-
-            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX
-                && dist[u] + graph[u][v] < dist[v])
-                dist[v] = dist[u] + graph[u][v];
-    }
-
-
-    printSolution(dist);
-}
-
-
-int main()
-{
-
-    int graph[V][V] ;
-    cout<<"Enter the graph "<<endl;
-    for(int i = 0; i<V; i++)
+  int i, j;
+  printf("\nenter the no of vertices: ");
+  scanf("%d", &n);
+  // parent[n];
+  printf("\nenter the cost matrix:\n");
+  for (i = 1; i <= n; i++)
+  {
+    for (j = 1; j <= n; j++)
     {
-        for(int j = 0; j<V; j++)
-            cin>>graph[i][j];
+      scanf("%d", &c[i][j]);
     }
-
-    dijkstra(graph, 0);
-
-    return 0;
+  }
+  printf("\nenter the source node: ");
+  scanf("%d", &src);
+  dijkstras();
+}
+// int printPath(int parent[], int j, int c)
+// {
+//   // Base Case : If j is source
+//   if (parent[j] == -1)
+//     return 0;
+//   printPath(parent, parent[j], c);
+//   c++;
+//   return c;
+// }
+void dijkstras()
+{
+  int vis[10], dist[10], u, j, count, min;
+  for (j = 1; j <= n; j++)
+  {
+    dist[j] = c[src][j];
+  }
+  for (j = 1; j <= n; j++)
+  {
+    vis[j] = 0;
+  }
+  dist[src] = 0;
+  vis[src] = 1;
+  count = 1;
+  while (count != n)
+  {
+    min = 9999;
+    for (j = 1; j <= n; j++)
+    {
+      if (dist[j] < min && vis[j] != 1)
+      {
+        min = dist[j];
+        u = j;
+      }
+    }
+    vis[u] = 1;
+    count++;
+    for (j = 1; j <= n; j++)
+    {
+      if (min + c[u][j] < dist[j] && vis[j] != 1)
+      {
+        dist[j] = min + c[u][j];
+      }
+    }
+  }
+  printf("\nthe shortest distance is:\n");
+  for (j = 1; j <= n; j++)
+  {
+    printf("\n%d----->%d=%d", src, j, dist[j]);
+  }
 }
